@@ -1,0 +1,62 @@
+{% extends "AuthBundle::layout.html.twig" %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="login">
+                    {% if app.user %}{# Si l'utilisateur est connecté j'affiche son nom  #}
+                        <p>
+                            Vous êtes connecté en tantque : <b>{{ app.user.username }}</b>
+                            <a href="{{ path('fos_user_security_logout') }}" class="btn btn-link">Déconnexion</a>
+                        </p>
+                    {% else %}{# Sinon j'affiche le bouton se connecter #}
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal">
+                            Se connecter
+                        </button>
+                    {% endif %}
+                </div>
+                <div class="modal fade" id="loginModal" tabindex="-1" role="dialog"
+                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Connexion</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form id="login-form" action="{{ path("fos_user_security_check") }}" method="post">
+                                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                                <div class="modal-body">
+                                    <div class="alert alert-login">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="username">Nom d'utilisateur</label>
+                                        <input type="text" id="username" name="_username" value=""
+                                               placeholder="Nom d'utilisateur" class="form-control" required="required"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">Mot de passe</label>
+                                        <input type="password" id="password" name="_password"
+                                               placeholder="Mot de passe" class="form-control" required="required"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="checkbox" id="remember_me" name="_remember_me" value="on"/>
+                                        <label for="remember_me">Garder ma session</label>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" id="_submit" name="_submit" class="btn btn-primary">
+                                        <span>Se connecter</span> <i class="fa fa-spinner fa-spin fa-login"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

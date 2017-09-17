@@ -1,0 +1,68 @@
+{% extends "::base.html.twig" %}
+
+
+{% block content %}
+    {% block fos_user_content %}
+    {% endblock fos_user_content %}
+{% endblock content %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+
+        $(document).ready(function () {
+            $('.fa-login').hide();//par défaut l'icone de loading est caché
+            $('.alert-login').hide(); //par défaut le div de l'alert après login est caché
+
+            $('#_submit').click(function (e) {
+                    e.preventDefault(); //Prevent Default action.
+                    var formURL = "{{ path('fos_user_security_check') }}"; //lien de vérification de l'authentification
+                    $('.fa-login').show(); //Afficher le loading
+                    $(this).attr('disabled',true); //Mettre le bouton en état désactivé
+                            $.ajax({
+                                    dataType: "json",
+                                    url: formURL,
+                                    type: $('#login-form').attr('method'),
+                                    data: $('#login-form').serialize(),
+                                    success: function (data, status, object) {
+                                        $('#_submit').removeAttr('disabled'); //remettre le bouton à son état initial
+                                        $('.alert-login').show();//afficher l'alert
+                                        $('.fa-login').hide();//cacher le loading
+                                        var message = data.message; //récupérer le message de retour après login soit ok soit echec
+                                        if(data.success == true)
+                                        {
+                                            var path = '{{ path("fos_user_security_logout") }}';//Route de déconnexion
+                                            if($('.alert-login').hasClass('alert-danger'))//s'il y a une alerte d'erreur déjà il faut la retirer
+                                            {
+                                                $('.alert-login').removeClass('alert-danger');
+                                            }
+                                            $('.alert-login').addClass('alert-success');// afficher une alerte de succès
+                                            $('.login').html('<p>Vous êtes connecté en tantque : <b>'+data.username+'</b><a href="'+path+'" class="btn btn-link">Déconnexion</a></p>');//afficher le nom de l'utilisateur connecté
+                                            $('.login').children('button').hide();//cache le bouton Se connecter
+
+
+
+                                            setTimeout(function() {
+                                                $('#loginModal').modal('hide');
+                                            }, 2000);
+                                        }
+                                        else
+                                        {
+                                            if($('.alert-login').hasClass('alert-success'))//s'il y a une alerte de succès déjà il faut la retirer
+                                            {
+                                                $('.alert-login').removeClass('alert-success');
+                                            }
+                                            $('.alert-login').addClass('alert-danger');//afficher une alerte d'erreur
+                                        }
+                                        $('.alert-login').text(message);//Modifier le texte de l'alerte
+                                    },
+                                        error: function (data, status, object) {
+                                            console.log(data.message); //Si la requete ajax a echoué, on affiche son message de retour
+                                        }
+                            });
+                    
+                });  
+            });
+    </script>
+{% endblock %}
