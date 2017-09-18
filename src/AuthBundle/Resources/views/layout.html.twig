@@ -13,8 +13,9 @@
 
         $(document).ready(function () {
             $('.fa-login').hide();//par défaut l'icone de loading est caché
+            $('.fa-register').hide();//par défaut l'icone de loading est caché
             $('.alert-login').hide(); //par défaut le div de l'alert après login est caché
-
+            $('.alert-register').hide();
             $('#_submit').click(function (e) {
                     e.preventDefault(); //Prevent Default action.
                     var formURL = "{{ path('fos_user_security_check') }}"; //lien de vérification de l'authentification
@@ -62,7 +63,79 @@
                                         }
                             });
                     
-                });  
+                });
+
+
+
+            $('#_submit_register').click(function (e) {
+                e.preventDefault(); //Prevent Default action.
+                $('.fa-register').show(); //Afficher le loading
+                //$(this).attr('disabled',true); //Mettre le bouton en état désactivé
+                var errorsArray=['data.email','data.username','data.plainPassword','children[plainPassword]'];
+
+                $.ajax({
+                    dataType: "json",
+                    url: $('#register-form').attr('action'),
+                    type: $('#register-form').attr('method'),
+                    data: $('#register-form').serialize(),
+                    success: function (data, status, object) {
+                        $('#_submit').removeAttr('disabled'); //remettre le bouton à son état initial
+                        $('.alert-register').show();//afficher l'alert
+                        $('.fa-register').hide();//cacher le loading
+                        var message = data.message; //récupérer le message de retour après login soit ok soit echec
+                        if(data.success == true)
+                        {
+                            var path = '{{ path("fos_user_security_logout") }}';//Route de déconnexion
+                            if($('.alert-register').hasClass('alert-danger'))//s'il y a une alerte d'erreur déjà il faut la retirer
+                            {
+                                $('.alert-register').removeClass('alert-danger');
+                                errorsArray.forEach(function (error) {
+                                    if($.trim(document.getElementById(error).textContent) !== "")
+                                    {
+                                        document.getElementById(error).textContent = "";
+                                    }
+                                });
+                            }
+                            $('.alert-register').addClass('alert-success');// afficher une alerte de succès
+                            $('.login').html('<p>Vous êtes connecté en tantque : <b>'+data.username+'</b><a href="'+path+'" class="btn btn-link">Déconnexion</a></p>');//afficher le nom de l'utilisateur connecté
+                            $('.login').children('button').hide();//cache le bouton Se connecter
+
+                            setTimeout(function() {
+                                $('#loginModal').modal('hide');
+                            }, 2000);
+                        }
+                        else
+                        {
+                            if($('.alert-register').hasClass('alert-success'))//s'il y a une alerte de succès déjà il faut la retirer
+                            {
+                                $('.alert-register').removeClass('alert-success');
+                            }
+                            $('.alert-register').addClass('alert-danger');//afficher une alerte d'erreur
+
+                            if(data.errors)
+                            {
+                                errorsArray.forEach(function (error) {
+                                    if($.trim(document.getElementById(error).textContent) !== "")
+                                    {
+                                        document.getElementById(error).textContent = "";
+                                    }
+                                });
+
+                                data.errors.forEach(function (error) {
+                                    document.getElementById(error.elementId).textContent = error.errorMessage;
+                                });
+                            }
+                        }
+
+                        $('.alert-register').text(message);//Modifier le texte de l'alerte
+
+                    },
+                    error: function (data, status, object) {
+                        console.log(data.message); //Si la requete ajax a echoué, on affiche son message de retour
+                    }
+                });
+
+            });
             });
     </script>
 {% endblock %}
