@@ -85,9 +85,19 @@ class RegistrationController extends BaseController
             }
             elseif ($request->isXmlHttpRequest())
             {
-                $errors = $this->get('validator')->validate($form);
+                $formErrors = $this->get('validator')->validate($form);
+                $ficheErrors = $this->get('validator')->validate($user->getFicheClient());
+
                 $errorsArray=[];
-                foreach ($errors as $error)
+                foreach ($formErrors as $error)
+                {
+                    $errorsArray[] = array(
+                        'elementId' => $error->getPropertyPath(),
+                        'errorMessage' => $error->getMessage(),
+                    );
+                }
+
+                foreach ($ficheErrors as $error)
                 {
                     $errorsArray[] = array(
                         'elementId' => $error->getPropertyPath(),

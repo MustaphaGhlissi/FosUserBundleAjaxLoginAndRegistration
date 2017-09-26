@@ -18,7 +18,7 @@
                 </div>
                 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog"
                      aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
+                    <div class="modal-dialog modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">Se connecter</h5>
@@ -31,19 +31,28 @@
                                 <div class="modal-body">
                                     <div class="alert alert-login">
                                     </div>
-                                    <div class="form-group">
-                                        <label for="username">Nom d'utilisateur</label>
-                                        <input type="text" id="username" name="_username" value=""
-                                               placeholder="Nom d'utilisateur" class="form-control" required="required"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password">Mot de passe</label>
-                                        <input type="password" id="password" name="_password"
-                                               placeholder="Mot de passe" class="form-control" required="required"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="checkbox" id="remember_me" name="_remember_me" value="on"/>
-                                        <label for="remember_me">Garder ma session</label>
+                                    <div class="row">
+                                        <div class="col-md-6 offset-md-3">
+                                            <div class="form-group">
+                                                <label for="username">Nom d'utilisateur</label>
+                                                <input type="text" id="username" name="_username" value=""
+                                                       placeholder="Nom d'utilisateur" class="form-control" required="required"/>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-6 offset-md-3">
+                                            <div class="form-group">
+                                                <label for="password">Mot de passe</label>
+                                                <input type="password" id="password" name="_password"
+                                                       placeholder="Mot de passe" class="form-control" required="required"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 offset-md-3">
+                                            <div class="form-group">
+                                                <input type="checkbox" id="remember_me" name="_remember_me" value="on"/>
+                                                <label for="remember_me">Garder ma session</label>
+                                            </div>
+                                        </div>
                                     </div>
 
                                 </div>
@@ -59,41 +68,112 @@
                                 <h5 class="modal-title" id="exampleModalLabel">S'inscrire</h5>
                                 <hr>
                             </div>
-                            <form id="register-form" action="{{ path("fos_user_registration_register") }}" method="post">
-                                <input type="hidden" id="fos_user_registration_form__token" name="fos_user_registration_form[_token]" value="{{ csrf_token('registration') }}" />
-                                <div class="modal-body">
-                                    <div class="alert alert-register">
+                            {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'id':'register-form','class': 'fos_user_registration_register'}}) }}
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="alert alert-register">
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="fos_user_registration_form_email">E-mail</label>
-                                        <input type="email" id="fos_user_registration_form_email" name="fos_user_registration_form[email]" class="form-control" required="" />
-                                        <span class="text-danger" id="data.email"></span>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.name) }}
+                                            {{ form_widget(form.name,{'attr':{'class':'form-control'}}) }}
+                                            <span class="text-danger" id="data.name"></span>
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="fos_user_registration_form_username">Nom d'utilisateur</label>
-                                        <input type="text" id="fos_user_registration_form_username" name="fos_user_registration_form[username]" class="form-control" required="" maxlength="180" pattern=".{2,}" />
-                                        <span class="text-danger" id="data.username"></span>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.firstname) }}
+                                            {{ form_widget(form.firstname,{'attr':{'class':'form-control'}}) }}
+                                            <span class="text-danger" id="data.firstname"></span>
+                                        </div>
                                     </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.username) }}
+                                            {{ form_widget(form.username,{'attr':{'class':'form-control'}}) }}
+                                            <span class="text-danger" id="data.username"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.email) }}
+                                            {{ form_widget(form.email,{'attr':{'class':'form-control'}}) }}
+                                            <span class="text-danger" id="data.email"></span>
 
-                                    <div class="form-group">
-                                        <label for="fos_user_registration_form_plainPassword_first">Mot de passe</label>
-                                        <input type="password" id="fos_user_registration_form_plainPassword_first" name="fos_user_registration_form[plainPassword][first]" class="form-control" required="" />
-                                        <span class="text-danger" id="data.plainPassword"></span>
+                                        </div>
                                     </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.plainPassword.first) }}
+                                            {{ form_widget(form.plainPassword.first,{'attr':{'class':'form-control'}}) }}
+                                            <span class="text-danger" id="data.plainPassword"></span>
 
-                                    <div class="form-group">
-                                        <label for="fos_user_registration_form_plainPassword_second">Confirmation de mot de passe</label>
-                                        <input type="password" id="fos_user_registration_form_plainPassword_second" name="fos_user_registration_form[plainPassword][second]" class="form-control" required="" />
-                                        <span class="text-danger" id="children[plainPassword]"></span>
+                                        </div>
                                     </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.plainPassword.second) }}
+                                            {{ form_widget(form.plainPassword.second,{'attr':{'class':'form-control'}}) }}
+                                            <span class="text-danger" id="children[plainPassword]"></span>
 
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            {{ form_label(form.ficheClient.phone) }}
+                                            {{ form_widget(form.ficheClient.phone,{'attr':{'class':'form-control'}}) }}
+                                            <span class="text-danger" id="phone"></span>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div class="form-group">
+                                            {{ form_label(form.ficheClient.address) }}
+                                            {{ form_widget(form.ficheClient.address,{'attr':{'class':'form-control'}}) }}
+                                            <span class="text-danger" id="address"></span>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.ficheClient.address2) }}
+                                            {{ form_widget(form.ficheClient.address2,{'attr':{'class':'form-control'}}) }}
+                                            <span class="text-danger" id="address2"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.ficheClient.zip) }}
+                                            {{ form_widget(form.ficheClient.zip,{'attr':{'class':'form-control'}}) }}
+                                            <span class="text-danger" id="zip"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.ficheClient.city) }}
+                                            {{ form_widget(form.ficheClient.city,{'attr':{'class':'form-control'}}) }}
+                                            <span class="text-danger" id="city"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.ficheClient.country) }}
+                                            {{ form_widget(form.ficheClient.country,{'attr':{'class':'form-control'}}) }}
+                                            <span class="text-danger" id="country"></span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="submit" id="_submit_register" class="btn btn-primary">
-                                        <span>S'inscrire</span> <i class="fa fa-spinner fa-spin fa-register"></i>
-                                    </button>
-                                </div>
-                            </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" id="_submit_register" class="btn btn-primary">
+                                    <span>S'inscrire</span> <i class="fa fa-spinner fa-spin fa-register"></i>
+                                </button>
+                            </div>
+                            <input type="hidden" id="fos_user_registration_form__token" name="fos_user_registration_form[_token]" value="{{ csrf_token('registration') }}" />
+                            {{ form_rest(form) }}
+                            {{ form_end(form) }}
                         </div>
                     </div>
                 </div>

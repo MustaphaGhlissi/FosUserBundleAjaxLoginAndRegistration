@@ -5,7 +5,7 @@ namespace AuthBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User as BaseUser;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * @ORM\Entity
  * @ORM\Table(name="user")
@@ -34,8 +34,6 @@ class User extends BaseUser
      * @var string
      *
      * @ORM\Column(name="name", type="string", nullable=true)
-     * @Assert\NotBlank()
-     * @Assert\Length(min="3")
      */
     protected $name;
 
@@ -43,14 +41,12 @@ class User extends BaseUser
      * @var string
      *
      * @ORM\Column(name="firstname", type="string", nullable=true)
-     * @Assert\NotBlank()
-     * @Assert\Length(min="3")
      */
     protected $firstname;
 
     /**
      * @var FicheClient $ficheClient
-     * @Assert\NotBlank()
+     *
      * @ORM\OneToOne(targetEntity="AuthBundle\Entity\FicheClient", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=true)
      */
@@ -152,28 +148,4 @@ class User extends BaseUser
     }
 
 
-
-    /**
-     * Set ficheClient
-     *
-     * @param \AuthBundle\Entity\FicheClient $ficheClient
-     *
-     * @return User
-     */
-    public function setFicheClient(\AuthBundle\Entity\FicheClient $ficheClient = null)
-    {
-        $this->ficheClient = $ficheClient;
-
-        return $this;
-    }
-
-    /**
-     * Get ficheClient
-     *
-     * @return \AuthBundle\Entity\FicheClient
-     */
-    public function getFicheClient()
-    {
-        return $this->ficheClient;
-    }
 }

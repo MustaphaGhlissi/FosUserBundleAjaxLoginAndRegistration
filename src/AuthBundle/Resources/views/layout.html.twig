@@ -16,6 +16,7 @@
             $('.fa-register').hide();//par défaut l'icone de loading est caché
             $('.alert-login').hide(); //par défaut le div de l'alert après login est caché
             $('.alert-register').hide();
+            var path = '{{ path("fos_user_security_logout") }}';//Route de déconnexion
             $('#_submit').click(function (e) {
                     e.preventDefault(); //Prevent Default action.
                     var formURL = "{{ path('fos_user_security_check') }}"; //lien de vérification de l'authentification
@@ -33,7 +34,6 @@
                                         var message = data.message; //récupérer le message de retour après login soit ok soit echec
                                         if(data.success == true)
                                         {
-                                            var path = '{{ path("fos_user_security_logout") }}';//Route de déconnexion
                                             if($('.alert-login').hasClass('alert-danger'))//s'il y a une alerte d'erreur déjà il faut la retirer
                                             {
                                                 $('.alert-login').removeClass('alert-danger');
@@ -70,8 +70,14 @@
             $('#_submit_register').click(function (e) {
                 e.preventDefault(); //Prevent Default action.
                 $('.fa-register').show(); //Afficher le loading
-                //$(this).attr('disabled',true); //Mettre le bouton en état désactivé
-                var errorsArray=['data.email','data.username','data.plainPassword','children[plainPassword]'];
+                $(this).attr('disabled',true); //Mettre le bouton en état désactivé
+
+                /*
+                    Le tableau suivant est un tableau qui définit tous les erreurs des champs de form à retourner après la requete ajax
+                    se sont les erreurs qui seront retournés après la validation de formulaire dans l'action registerAction de FOSUserBUndle
+                    De plus pour aficher ces erreurs j'ai définit de balise ayant un id portant un nom d'erreur dans le tableau suivant
+                 */
+                var errorsArray=['data.name','data.firstname','data.email','data.username','data.plainPassword','children[plainPassword]','phone', 'address','address2', 'zip', 'city', 'country'];
 
                 $.ajax({
                     dataType: "json",
@@ -79,13 +85,13 @@
                     type: $('#register-form').attr('method'),
                     data: $('#register-form').serialize(),
                     success: function (data, status, object) {
-                        $('#_submit').removeAttr('disabled'); //remettre le bouton à son état initial
+                        $('#_submit_register').removeAttr('disabled'); //remettre le bouton à son état initial
                         $('.alert-register').show();//afficher l'alert
                         $('.fa-register').hide();//cacher le loading
                         var message = data.message; //récupérer le message de retour après login soit ok soit echec
                         if(data.success == true)
                         {
-                            var path = '{{ path("fos_user_security_logout") }}';//Route de déconnexion
+                            //var path = '\{\{ path("fos_user_security_logout") }}';//Route de déconnexion
                             if($('.alert-register').hasClass('alert-danger'))//s'il y a une alerte d'erreur déjà il faut la retirer
                             {
                                 $('.alert-register').removeClass('alert-danger');
@@ -112,6 +118,7 @@
                             }
                             $('.alert-register').addClass('alert-danger');//afficher une alerte d'erreur
 
+                            // Si on a des erreurs on va afficher les erreurs qui a pour nom existe dans le tableau errorsArray définit en haut
                             if(data.errors)
                             {
                                 errorsArray.forEach(function (error) {
